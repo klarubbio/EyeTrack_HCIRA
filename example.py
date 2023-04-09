@@ -22,6 +22,7 @@ x_calib = []
 y_calib = []
 x_points = []
 y_points = []
+x_calib_min, x_calib_max, y_calib_min, y_calib_max = 0,0,0,0;
 
 max_y = 480
 max_x = 640
@@ -62,9 +63,21 @@ while True:
     #cv2.putText(frame, "x ratio:  " + str(x_ratio), (90, 200), cv2.FONT_HERSHEY_DUPLEX, 0.9, (147, 58, 31), 1)
     #cv2.putText(frame, "y ratio: " + str(y_ratio), (90, 235), cv2.FONT_HERSHEY_DUPLEX, 0.9, (147, 58, 31), 1)
     if x_ratio is not None and y_ratio is not None:
-        x_ratio = x_ratio * max_x
-        y_ratio = y_ratio * max_y
-        cv2.putText(frame, ".", (int(x_ratio), int(y_ratio)), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
+        if frame_counter <= 330:
+            x_ratio = x_ratio * max_x
+            y_ratio = y_ratio * max_y
+            cv2.putText(frame, ".", (int(x_ratio), int(y_ratio)), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
+        else:
+            # subtract min value
+            x_out = x_ratio - x_calib_min
+            y_out = y_ratio - y_calib_min
+            # normalize by multiplying by 1 / (max-min)
+            x_out *= (1 / (x_calib_max-x_calib_min))
+            y_out *= (1 / (y_calib_max-y_calib_min))
+            # multiply by screen size
+            x_out *= max_x
+            y_out *= max_y
+            cv2.putText(frame, ".", (int(x_out), int(y_out)), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
 
 
     if 30 <= frame_counter and frame_counter < 330:
@@ -78,8 +91,84 @@ while True:
             y_points = []
         cv2.putText(frame, ".", (int(calib_points[(frame_counter//30) - 2][0]), int(calib_points[(frame_counter//30) - 2][1])), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
         if x_ratio is not None and y_ratio is not None:
-            x_points.append(x_ratio)
-            y_points.append(y_ratio)
+            x_points.append(gaze.horizontal_ratio())
+            y_points.append(gaze.vertical_ratio())
+    elif frame_counter == 330:
+        # get x min
+        total = 0
+        count = 0
+        # min x is at points 0, 3, 6
+        for list in range(0, 7, 3):
+            for point in x_calib[list]:
+                if point is not None:
+                    total += point
+                    count += 1
+        print(count)
+        print("average min x: ", str(total / count))
+        x_calib_min = total / count
+
+        # get x mid
+        total = 0
+        count = 0
+        # mid x is at points 1, 4, 7
+        for list in range(1, 8, 3):
+            for point in x_calib[list]:
+                if point is not None:
+                    total += point
+                    count += 1
+        print(count)
+        print("average mid x: ", str(total / count))
+
+        # get x max
+        total = 0
+        count = 0
+        # max x is at points 2,5,8
+        for list in range(2, 9, 3):
+            for point in x_calib[list]:
+                if point is not None:
+                    total += point
+                    count += 1
+        print(count)
+        print("average max x: ", str(total / count))
+        x_calib_max = total / count
+
+        # get y min
+        total = 0
+        count = 0
+        # min y is at points 0,1,2
+        for list in range(0, 3, 1):
+            for point in y_calib[list]:
+                if point is not None:
+                    total += point
+                    count += 1
+        print(count)
+        print("average min y: ", str(total / count))
+        y_calib_min = total / count
+
+        # get y mid
+        total = 0
+        count = 0
+        # mid y is at points 3,4,5
+        for list in range(3, 6, 1):
+            for point in y_calib[list]:
+                if point is not None:
+                    total += point
+                    count += 1
+        print(count)
+        print("average mid y: ", str(total / count))
+
+        # get y max
+        total = 0
+        count = 0
+        # max y is at points 6,7,8
+        for list in range(6, 9, 1):
+            for point in y_calib[list]:
+                if point is not None:
+                    total += point
+                    count += 1
+        print(count)
+        print("average max y: ", str(total / count))
+        y_calib_max = total / count
     cv2.imshow("Demo", frame)
 
     if cv2.waitKey(1) == 27:
@@ -95,79 +184,7 @@ for list in range(0, len(x_calib)):
         count += 1
     print('average for list ', list, ': ', str(total/count))'''
 
-# get x min
-total = 0
-count = 0
-# min x is at points 0, 3, 6
-for list in range(0, 7, 3):
-    for point in x_calib[list]:
-        if point is not None:
-            total += point
-            count += 1
-print(count)
-print("average min x: ", str(total/count))
 
-# get x mid
-total = 0
-count = 0
-# mid x is at points 1, 4, 7
-for list in range(1, 8, 3):
-    for point in x_calib[list]:
-        if point is not None:
-            total += point
-            count += 1
-print(count)
-print("average mid x: ", str(total/count))
-
-
-# get x max
-total = 0
-count = 0
-# max x is at points 2,5,8
-for list in range(2, 9, 3):
-    for point in x_calib[list]:
-        if point is not None:
-            total += point
-            count += 1
-print(count)
-print("average max x: ", str(total/count))
-
-# get y min
-total = 0
-count = 0
-# min y is at points 0,1,2
-for list in range(0, 3, 1):
-    for point in y_calib[list]:
-        if point is not None:
-            total += point
-            count += 1
-print(count)
-print("average min y: ", str(total/count))
-
-# get y mid
-total = 0
-count = 0
-# mid y is at points 3,4,5
-for list in range(3, 6, 1):
-    for point in y_calib[list]:
-        if point is not None:
-            total += point
-            count += 1
-print(count)
-print("average mid y: ", str(total/count))
-
-
-# get y max
-total = 0
-count = 0
-# max y is at points 6,7,8
-for list in range(6,9,1):
-    for point in y_calib[list]:
-        if point is not None:
-            total += point
-            count += 1
-print(count)
-print("average max y: ", str(total/count))
 
 print("x points")
 for list in x_calib:
