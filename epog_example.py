@@ -7,6 +7,8 @@ Demonstration of how to use the eye point of gaze (EPOG) tracking library.
 This example application can be called like this (both args are optional):
 >> ./epog_example.py 1 'log_file_prefix'
 
+Karina: running with param 1 is wayyyy better
+
 '1': stabilize estimated EPOG w.r.t. previous cluster of EPOGs
 '0': allow spurious EPOGs that deviate from cluster (default)
 
@@ -20,6 +22,7 @@ Check the README.md for complete documentation.
 
 import sys
 import cv2
+import keyboard
 import gaze_tracking as gt
 
 # setup_epog expects max two args, both optional,
@@ -27,8 +30,13 @@ import gaze_tracking as gt
 test_error_dir = '../GazeEvaluation/test_errors/'
 epog = gt.EPOG(test_error_dir, sys.argv)
 
+# webcam = cv2.VideoCapture(0)
+circle_rad = 20
+
+points = []
 
 while True:
+    # print("while loop ran")
     # We get a new frame from the webcam
     _, frame = epog.webcam.read()
     if frame is not None:
@@ -49,7 +57,20 @@ while True:
         # before calibration and tests have been completed
         if screen_x is not None and screen_y is not None:
             text = "Looking at point {}, {} on the screen".format(screen_x, screen_y)
+            
+            epog.test_error_file.write("str(screen_x): ")
+            epog.test_error_file.write(str(screen_x))
 
+            # cv2.circle(frame, (screen_x, screen_y), circle_rad // 4, (170, 170, 170), -1)
+            if keyboard.is_pressed('a'):
+                points.append((screen_x,screen_y))
+            # draw line of all points
+            for point_num in range(1, len(points)):
+                cv2.line(frame, (points[point_num-1][0], points[point_num-1][1]), (points[point_num][0], points[point_num][1]), (170,170,170), 1)
+            cv2.imshow(epog.calib_window, frame)
+        # cv2.imshow(epog.calib_window, frame)
+        # cv2.putText(frame, text, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
+        # print(text)
         # Press Esc to quit the video analysis loop
         if cv2.waitKey(1) == 27:
             # Release video capture

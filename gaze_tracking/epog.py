@@ -108,13 +108,12 @@ class EPOG(object):
 
         # continue to unobtrusively estimate eye point of gaze
         else:
-            if not self.windows_closed:
+            '''if not self.windows_closed:
                 # get the calibration window out of the way
                 icon_sz = 50
                 cv2.resizeWindow(self.calib_window, icon_sz, icon_sz)
-                cv2.moveWindow(self.calib_window, self.monitor['width'] - icon_sz,
-                               self.monitor['height'] - icon_sz)
-                self.windows_closed = True
+                cv2.moveWindow(self.calib_window, self.monitor['width'] - icon_sz, self.monitor['height'] - icon_sz)
+                self.windows_closed = True'''
             screen_x, screen_y = self.pog.point_of_gaze(self.webcam_estate)
 
         return screen_x, screen_y

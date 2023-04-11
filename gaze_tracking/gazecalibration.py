@@ -216,8 +216,8 @@ class GazeCalibration(object):
                 self.test_p = self.test_p + 1
                 self.test_frame = 0
         else:
-            if self.test_error_file is not None:
-                self.test_error_file.close()
+            '''if self.test_error_file is not None:
+                self.test_error_file.close()'''
             self.test_completed = True
 
         return self.fs_frame
