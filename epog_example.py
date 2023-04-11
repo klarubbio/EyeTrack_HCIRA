@@ -23,6 +23,7 @@ Check the README.md for complete documentation.
 import sys
 import cv2
 import keyboard
+import numpy as np
 import gaze_tracking as gt
 
 # setup_epog expects max two args, both optional,
@@ -34,6 +35,10 @@ epog = gt.EPOG(test_error_dir, sys.argv)
 circle_rad = 20
 
 points = []
+
+monitor = epog.monitor
+fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
+
 
 while True:
     # print("while loop ran")
@@ -62,12 +67,12 @@ while True:
             epog.test_error_file.write(str(screen_x))
 
             # cv2.circle(frame, (screen_x, screen_y), circle_rad // 4, (170, 170, 170), -1)
-            if keyboard.is_pressed('a'):
-                points.append((screen_x,screen_y))
+            #if keyboard.is_pressed('a'): # polling for input is causing a serious lag
+            points.append((screen_x,screen_y))
             # draw line of all points
             for point_num in range(1, len(points)):
-                cv2.line(frame, (points[point_num-1][0], points[point_num-1][1]), (points[point_num][0], points[point_num][1]), (170,170,170), 1)
-            cv2.imshow(epog.calib_window, frame)
+                cv2.line(fullscreen_frame, (points[point_num-1][0], points[point_num-1][1]), (points[point_num][0], points[point_num][1]), (170,170,170), 1)
+            cv2.imshow(epog.calib_window, fullscreen_frame)
         # cv2.imshow(epog.calib_window, frame)
         # cv2.putText(frame, text, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
         # print(text)
