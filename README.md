@@ -1,5 +1,19 @@
 # Gaze Tracking
 
+## HCIRA Readme Additions
+
+### Running the code
+1. Follow the original instructions for installing dependencies.
+2. Additional libraries that may need to be installed are keyboard, numpy, and random.
+3. From the command prompt, run the app with the line "python epog_example.py 1 log". If the command line args aren't included, it is kinda bad. They explain below that 1 stabilizes the calibration clusters, and log is just the name for wherever you want debug messages to go.
+
+### Instructions for using an external camera
+1. Download the iVCam app on phone and on PC (https://www.e2esoft.com/ivcam/). 
+2. Open both the phone app and computer app. Connect to the computer by pressing the plus button on the phone app and entering your computer's IP address.
+3. Confirm that the video stream from the phone is connected to your computer. You can do this by opening the camera app on your computer and pressing the switch camera button to see the stream from your phone. 
+4. Make sure that the scripts are configured to connect to the extra camera instead of the default camera. Anywhere that you see the code "cv2.VideoCapture(0)", it should be changed to "cv2.VideoCapture(1)". 
+5. Run the app!
+
 ![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)

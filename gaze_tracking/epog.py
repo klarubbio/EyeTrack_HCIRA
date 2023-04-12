@@ -77,7 +77,8 @@ class EPOG(object):
         return 'Calibration'
 
     def setup_webcam(self):
-        self.webcam = cv2.VideoCapture(0)
+        # when using default webcam, switch param to 0
+        self.webcam = cv2.VideoCapture(1)
         self.webcam_w = int(self.webcam.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.webcam_h = int(self.webcam.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.logger.info('Webcam resolution: {} x {}'.format(self.webcam_w, self.webcam_h))

@@ -117,9 +117,13 @@ class GazeCalibration(object):
                 self.fixation_frame = self.fixation_frame + 1
             elif self.calib_frame < self.nb_calib_frames:
                 self.prompt_fixation(self.calib_p)
-                self.record_gaze_and_iris(self.calib_p, webcam_estate)
-                self.calib_frame = self.calib_frame + 1
+                # calibration should only happen if gaze is recorded for all n frames
+                if self.record_gaze_and_iris(self.calib_p, webcam_estate) is not None:
+                    self.calib_frame = self.calib_frame + 1
             else:
+                #print("calib ratio: ", len(self.calib_ratios))
+                if self.test_error_file is not None:
+                    self.test_error_file.write(str(len(self.calib_ratios[self.calib_p])))
                 self.calib_ratios[self.calib_p] = cluster_ratios_for_calib_point(self.calib_ratios[self.calib_p])
                 self.calib_p = self.calib_p + 1
                 self.fixation_frame = 0
@@ -180,12 +184,15 @@ class GazeCalibration(object):
         vr = self.gaze_tracking.vertical_ratio()
         if hr is not None and vr is not None:
             self.calib_ratios[calib_p].append([hr, vr])
+        else:
+            return None
 
         # point is in the middle of the screen: record base iris diameter (for later comparison)
         if self.calib_points[calib_p][0] == self.fsw // 2 and self.calib_points[calib_p][1] == self.fsh // 2:
             iris_diam = self.measure_iris_diameter(webcam_estate)
             self.base_iris_size = self.base_iris_size + iris_diam
             self.iris_size_div = self.iris_size_div + 1
+        return 1
 
     def test_gaze(self, pog, webcam_estate):
         """
