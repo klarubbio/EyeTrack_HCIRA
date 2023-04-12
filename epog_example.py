@@ -49,6 +49,10 @@ for i in range(0,10):
     for shape in gestures:
         rand_gestures.append(shape)
 
+gesture_images = {}
+for gesture in gestures:
+    gesture_images[gesture] = cv2.imread(gesture+'.png',0)
+
 # create empty dictionary for points to parse to xml later
 template_map = {}
 for shape in gestures:
@@ -91,12 +95,18 @@ while True:
             # cv2.circle(frame, (screen_x, screen_y), circle_rad // 4, (170, 170, 170), -1)
             if keyboard.is_pressed('a'): # polling for input is causing a serious lag
                 points.append((screen_x,screen_y))
+            else:
                 # draw line of all points
-                max = len(points)
-                if max > 1:
-                    cv2.line(fullscreen_frame, (points[max - 2][0], points[max - 2][1]), (points[max - 1][0], points[max - 1][1]), (170, 170, 170), 1)
-                    cv2.imshow(epog.calib_window, fullscreen_frame)
-                    cv2.waitKey(1)
+                if len(points) > 0:
+                    for i in range(1, len(points)):
+                        cv2.line(fullscreen_frame, (points[i-1][0], points[i-1][1]), (points[i][0], points[i][1]), (170,170,170), 1)
+                        cv2.imshow(epog.calib_window, fullscreen_frame)
+                        cv2.waitKey(1)
+#
+        #                if max > 1:
+ #                   cv2.line(fullscreen_frame, (points[max - 2][0], points[max - 2][1]), (points[max - 1][0], points[max - 1][1]), (170, 170, 170), 1)
+  #                  cv2.imshow(epog.calib_window, fullscreen_frame)
+   #                 cv2.waitKey(1)
         # cv2.imshow(epog.calib_window, frame)
         # cv2.putText(frame, text, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
         # print(text)
@@ -112,8 +122,9 @@ while True:
             if len(rand_gestures) > 0:
                 remove_index = random.randint(0,len(rand_gestures)-1)
                 curr_gesture = rand_gestures[remove_index]
+                cv2.imshow(epog.calib_window, gesture_images[curr_gesture])
                 cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
-                cv2.imshow(epog.calib_window, fullscreen_frame)
+                # cv2.imshow(epog.calib_window, fullscreen_frame)
                 rand_gestures.pop(remove_index)
 
 
