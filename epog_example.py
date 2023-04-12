@@ -35,10 +35,12 @@ epog = gt.EPOG(test_error_dir, sys.argv)
 # webcam = cv2.VideoCapture(0)
 circle_rad = 20
 
-points = []
+
 
 monitor = epog.monitor
 fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
+
+
 
 gestures = ['triangle', 'x', 'rectangle', 'circle', 'check', 'caret', 'zigzag', 'arrow', 'left_square_bracket', 'right_square_bracket', 'v', 'delete', 'left_curly_brace', 'right_curly_brace', 'star', 'pigtail']
 rand_gestures = []
@@ -47,8 +49,15 @@ for i in range(0,10):
     for shape in gestures:
         rand_gestures.append(shape)
 
+# create empty dictionary for points to parse to xml later
+template_map = {}
+for shape in gestures:
+    template_map[shape] = []
+
 counter = 0
 nonnone_frames = 0
+curr_gesture = ""
+points = []
 
 while True:
     # print("while loop ran")
@@ -80,16 +89,14 @@ while True:
             epog.test_error_file.write(str(screen_x))
 
             # cv2.circle(frame, (screen_x, screen_y), circle_rad // 4, (170, 170, 170), -1)
-            #if keyboard.is_pressed('a'): # polling for input is causing a serious lag
-            points.append((screen_x,screen_y))
-            # draw line of all points
-            max = len(points)
-            if max > 1:
-                cv2.line(fullscreen_frame, (points[max - 2][0], points[max - 2][1]), (points[max - 1][0], points[max - 1][1]), (170, 170, 170), 1)
-            
-
-            cv2.imshow(epog.calib_window, fullscreen_frame)
-            cv2.waitKey(1)
+            if keyboard.is_pressed('a'): # polling for input is causing a serious lag
+                points.append((screen_x,screen_y))
+                # draw line of all points
+                max = len(points)
+                if max > 1:
+                    cv2.line(fullscreen_frame, (points[max - 2][0], points[max - 2][1]), (points[max - 1][0], points[max - 1][1]), (170, 170, 170), 1)
+                    cv2.imshow(epog.calib_window, fullscreen_frame)
+                    cv2.waitKey(1)
         # cv2.imshow(epog.calib_window, frame)
         # cv2.putText(frame, text, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
         # print(text)
@@ -97,13 +104,17 @@ while True:
         if keyboard.is_pressed('n'):
             # clear off screen and handle old points
             fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
-            points.clear()
+            if len(points) > 0:
+                # add to template map
+                template_map[curr_gesture].append(points)
+            points = []
             # get next gesture to display and remove that item from possible gestures list
-            remove_index = random.randint(0,len(rand_gestures)-1)
-            cv2.putText(fullscreen_frame, rand_gestures[remove_index], (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
-            cv2.imshow(epog.calib_window, fullscreen_frame)
-            rand_gestures.pop(remove_index)
-            # TODO: add handling for empty list, all gestures already drawn
+            if len(rand_gestures) > 0:
+                remove_index = random.randint(0,len(rand_gestures)-1)
+                curr_gesture = rand_gestures[remove_index]
+                cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
+                cv2.imshow(epog.calib_window, fullscreen_frame)
+                rand_gestures.pop(remove_index)
 
 
 
@@ -114,6 +125,7 @@ while True:
             print(len(points))
             print(counter)
             print(nonnone_frames)
+            print(template_map)
             break
 
         
