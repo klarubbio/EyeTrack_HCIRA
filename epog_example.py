@@ -24,6 +24,7 @@ import sys
 import cv2
 import keyboard
 import numpy as np
+import random
 import gaze_tracking as gt
 
 # setup_epog expects max two args, both optional,
@@ -39,15 +40,26 @@ points = []
 monitor = epog.monitor
 fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
 
+gestures = ['triangle', 'x', 'rectangle', 'circle', 'check', 'caret', 'zigzag', 'arrow', 'left_square_bracket', 'right_square_bracket', 'v', 'delete', 'left_curly_brace', 'right_curly_brace', 'star', 'pigtail']
+rand_gestures = []
+# list of 10 of each shape
+for i in range(0,10):
+    for shape in gestures:
+        rand_gestures.append(shape)
+
+counter = 0
+nonnone_frames = 0
 
 while True:
     # print("while loop ran")
     # We get a new frame from the webcam
+
     _, frame = epog.webcam.read()
     if frame is not None:
+        counter += 1
         # Analyze gaze direction and map to screen coordinates
         screen_x, screen_y = epog.analyze(frame)
-
+        '''
         # Access gaze direction
         text = ""
         if epog.gaze_tr.is_right():
@@ -56,11 +68,12 @@ while True:
             text = "Looking left"
         elif epog.gaze_tr.is_center():
             text = "Looking center"
-
+        '''
         # Use gaze projected onto screen surface
         # Screen coords will be None for a few initial frames,
         # before calibration and tests have been completed
         if screen_x is not None and screen_y is not None:
+            nonnone_frames += 1
             text = "Looking at point {}, {} on the screen".format(screen_x, screen_y)
             
             epog.test_error_file.write("str(screen_x): ")
@@ -70,18 +83,42 @@ while True:
             #if keyboard.is_pressed('a'): # polling for input is causing a serious lag
             points.append((screen_x,screen_y))
             # draw line of all points
-            for point_num in range(1, len(points)):
-                cv2.line(fullscreen_frame, (points[point_num-1][0], points[point_num-1][1]), (points[point_num][0], points[point_num][1]), (170,170,170), 1)
+            max = len(points)
+            if max > 1:
+                cv2.line(fullscreen_frame, (points[max - 2][0], points[max - 2][1]), (points[max - 1][0], points[max - 1][1]), (170, 170, 170), 1)
+            
+
             cv2.imshow(epog.calib_window, fullscreen_frame)
+            cv2.waitKey(1)
         # cv2.imshow(epog.calib_window, frame)
         # cv2.putText(frame, text, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
         # print(text)
         # Press Esc to quit the video analysis loop
+        if keyboard.is_pressed('n'):
+            # clear off screen and handle old points
+            fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
+            points.clear()
+            # get next gesture to display and remove that item from possible gestures list
+            remove_index = random.randint(0,len(rand_gestures)-1)
+            cv2.putText(fullscreen_frame, rand_gestures[remove_index], (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
+            cv2.imshow(epog.calib_window, fullscreen_frame)
+            rand_gestures.pop(remove_index)
+            # TODO: add handling for empty list, all gestures already drawn
+
+
+
         if cv2.waitKey(1) == 27:
             # Release video capture
             epog.webcam.release()
             cv2.destroyAllWindows()
+            print(len(points))
+            print(counter)
+            print(nonnone_frames)
             break
+
+        
+        #elif wait == 39:
+        #    print("next")
         # Note: The waitkey function is the only method in HighGUI that can fetch and handle events,
         # so it needs to be called periodically for normal event processing unless HighGUI
         # is used within an environment that takes care of event processing.

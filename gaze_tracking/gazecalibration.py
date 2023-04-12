@@ -47,8 +47,8 @@ class GazeCalibration(object):
         self.iris_size_div = 0
 
         self.nb_instr_frames = 20  # display brief instruction on how to calibrate
-        self.nb_fixation_frames = 5  # show the fixation dot for this many video frames before measuring starts
-        self.nb_calib_frames = 10  # calibrate for this many frames (after the user has fixated on the dot)
+        self.nb_fixation_frames = 10  # show the fixation dot for this many video frames before measuring starts
+        self.nb_calib_frames = 20  # calibrate for this many frames (after the user has fixated on the dot)
         self.nb_test_frames = 20  # show test point for these many frames
 
         # counters to keep track of the calibration process
