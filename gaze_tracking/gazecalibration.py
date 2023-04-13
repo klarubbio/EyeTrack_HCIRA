@@ -223,6 +223,14 @@ class GazeCalibration(object):
                 self.test_p = self.test_p + 1
                 self.test_frame = 0
         else:
+            cv2.putText(self.fs_frame, 'Press n to move to next gesture.', (80, 100),
+                    cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 1)
+            cv2.putText(self.fs_frame, 'Press and hold a when you are ready to draw.', (80, 200),
+                        cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 1)
+            cv2.putText(self.fs_frame, 'Press c to clear the gesture and try again.', (80, 300),
+                        cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 1)
+            cv2.putText(self.fs_frame, "Buttons tend to lag. Press and hold if they aren't working", (80, 400),
+                        cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 255), 1)
             '''if self.test_error_file is not None:
                 self.test_error_file.close()'''
             self.test_completed = True

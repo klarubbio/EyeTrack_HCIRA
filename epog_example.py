@@ -25,6 +25,7 @@ import cv2
 import keyboard
 import numpy as np
 import random
+import time
 import gaze_tracking as gt
 
 # setup_epog expects max two args, both optional,
@@ -32,16 +33,11 @@ import gaze_tracking as gt
 test_error_dir = '../GazeEvaluation/test_errors/'
 epog = gt.EPOG(test_error_dir, sys.argv)
 
-# webcam = cv2.VideoCapture(0)
-circle_rad = 20
-
-
-
+# create empty screen for drawing
 monitor = epog.monitor
 fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
 
-
-
+# setup gestures for random selection
 gestures = ['triangle', 'x', 'rectangle', 'circle', 'check', 'caret', 'zigzag', 'arrow', 'left_square_bracket', 'right_square_bracket', 'v', 'delete', 'left_curly_brace', 'right_curly_brace', 'star', 'pigtail']
 rand_gestures = []
 # list of 10 of each shape
@@ -49,6 +45,7 @@ for i in range(0,10):
     for shape in gestures:
         rand_gestures.append(shape)
 
+# setup corresponding gesture images (should be in same directory as this file)
 gesture_images = {}
 for gesture in gestures:
     gesture_images[gesture] = cv2.imread(gesture+'.png',0)
@@ -58,10 +55,13 @@ template_map = {}
 for shape in gestures:
     template_map[shape] = []
 
+# some testing counter
 counter = 0
 nonnone_frames = 0
 curr_gesture = ""
 points = []
+
+stop_delay = 0 # 5 second delay between button press and next button press
 
 while True:
     # print("while loop ran")
@@ -82,7 +82,7 @@ while True:
         elif epog.gaze_tr.is_center():
             text = "Looking center"
         '''
-        # Use gaze projected onto screen surface
+        # Use gaze projected onto screen surface (only count if gaze is detected)
         # Screen coords will be None for a few initial frames,
         # before calibration and tests have been completed
         if screen_x is not None and screen_y is not None:
@@ -92,26 +92,29 @@ while True:
             epog.test_error_file.write("str(screen_x): ")
             epog.test_error_file.write(str(screen_x))
 
-            # cv2.circle(frame, (screen_x, screen_y), circle_rad // 4, (170, 170, 170), -1)
-            if keyboard.is_pressed('a'): # polling for input is causing a serious lag
+            # add points if user is pressing a
+            if keyboard.is_pressed('a'):
                 points.append((screen_x,screen_y))
             else:
-                # draw line of all points
+                # draw line of all points when user releases a
                 if len(points) > 0:
                     for i in range(1, len(points)):
                         cv2.line(fullscreen_frame, (points[i-1][0], points[i-1][1]), (points[i][0], points[i][1]), (170,170,170), 1)
                         cv2.imshow(epog.calib_window, fullscreen_frame)
-                        cv2.waitKey(1)
-#
-        #                if max > 1:
- #                   cv2.line(fullscreen_frame, (points[max - 2][0], points[max - 2][1]), (points[max - 1][0], points[max - 1][1]), (170, 170, 170), 1)
-  #                  cv2.imshow(epog.calib_window, fullscreen_frame)
-   #                 cv2.waitKey(1)
-        # cv2.imshow(epog.calib_window, frame)
-        # cv2.putText(frame, text, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 10)
-        # print(text)
-        # Press Esc to quit the video analysis loop
-        if keyboard.is_pressed('n'):
+                        cv2.waitKey(1) # still not really sure what wait key does but seems to work ?
+
+        # clear screen and try again if user presses c
+        if keyboard.is_pressed('c') and time.time() > stop_delay:
+            stop_delay = time.time() + 5.0
+            fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
+            # don't save last points
+            if len(points) > 0:
+                points = []
+            cv2.imshow(epog.calib_window, gesture_images[curr_gesture])
+            cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+        # clear screen and move on, saving points if user presses n
+        if keyboard.is_pressed('n') and time.time() > stop_delay:
+            stop_delay = time.time() + 5.0
             # clear off screen and handle old points
             fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
             if len(points) > 0:
@@ -121,13 +124,12 @@ while True:
             # get next gesture to display and remove that item from possible gestures list
             if len(rand_gestures) > 0:
                 remove_index = random.randint(0,len(rand_gestures)-1)
-                curr_gesture = rand_gestures[remove_index]
+                curr_gesture = rand_gestures[remove_index] # curr gesture is saved even if the screen is cleared (clearing does not use up additional gestures)
                 cv2.imshow(epog.calib_window, gesture_images[curr_gesture])
                 cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
                 # cv2.imshow(epog.calib_window, fullscreen_frame)
                 rand_gestures.pop(remove_index)
-
-
+                cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
 
         if cv2.waitKey(1) == 27:
             # Release video capture
