@@ -116,6 +116,10 @@ class EPOG(object):
                 cv2.moveWindow(self.calib_window, self.monitor['width'] - icon_sz, self.monitor['height'] - icon_sz)
                 self.windows_closed = True'''
             screen_x, screen_y = self.pog.point_of_gaze(self.webcam_estate)
+            '''test_error_file.write("\nx from pog: ")
+            test_error_file.write(str(screen_x))
+            test_error_file.write("\ny from pog: ")
+            test_error_file.write(str(screen_y))'''
             
 
         return screen_x, screen_y

@@ -70,8 +70,15 @@ class PointOfGaze(object):
             est_y = (max(self.gaze_tracking.vertical_ratio() - self.gaze_calib.top_vr, 0) *
                      self.gaze_calib.fsh * dist_factor) /\
                     (self.gaze_calib.bottom_vr - self.gaze_calib.top_vr)
+            '''print("\nestimate x: ")
+            print(str(est_x))
+            print("\nestimate y: ")
+            print(str(est_y))'''
+
             est_x = int(round(est_x))
             est_y = int(round(est_y))
+
+
 
             if self.stabilize:
                 stab_x, stab_y = self.stabilized(est_x, est_y)
@@ -85,6 +92,11 @@ class PointOfGaze(object):
                     self.current_iris_size = self.gaze_calib.measure_iris_diameter(webcam_estate)
                     self.logger.debug('Iris {}'.format(self.current_iris_size))
 
+            '''print("\nstabilized x: ")
+            print(str(est_x))
+            print("\nstabilized y: ")
+            print(str(est_y))'''
+            
             return est_x, est_y
         else:
             # self.logger.debug('EPOG None None')

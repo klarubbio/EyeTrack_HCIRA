@@ -34,14 +34,15 @@ def sendToXML(map):
 
     # iterate through each shape
     for gesture in map:
-        filename = gesture
+
         for rep in range(0, len(map[gesture])):
+            filename = "./xml/" + gesture
             if rep < 10:
                 filename += "0"
             filename += str(rep + 1)
             # set up file
             data = ET.Element('Gesture')
-            data.set('Name', filename)
+            data.set('Name', gesture)
             for point in map[gesture][rep]:
                 pt = ET.SubElement(data, 'Point')
                 pt.set('X', str(point[0]))
@@ -112,9 +113,9 @@ while True:
             nonnone_frames += 1
             text = "Looking at point {}, {} on the screen".format(screen_x, screen_y)
 
-            epog.test_error_file.write("str(screen_x): ")
+            epog.test_error_file.write("\nstr(screen_x): ")
             epog.test_error_file.write(str(screen_x))
-            epog.test_error_file.write("str(screen_y): ")
+            epog.test_error_file.write("\nstr(screen_y): ")
             epog.test_error_file.write(str(screen_y))
 
             # add points if user is pressing a
@@ -128,6 +129,11 @@ while True:
                         cv2.imshow(epog.calib_window, fullscreen_frame)
                         cv2.waitKey(1) # still not really sure what wait key does but seems to work ?
 
+                    cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+                    cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 230),
+                                cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+                    cv2.imshow(epog.calib_window, fullscreen_frame)
+
         # clear screen and try again if user presses c
         if keyboard.is_pressed('c') and time.time() > stop_delay:
             stop_delay = time.time() + 5.0
@@ -135,13 +141,14 @@ while True:
             # don't save last points
             if len(points) > 0:
                 points = []
-            cv2.imshow(epog.calib_window, gesture_images[curr_gesture])
-            cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+            fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (monitor['width'], monitor['height']))
+            cv2.imshow(epog.calib_window, fullscreen_frame)
+            cv2.waitKey(0)
+            fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
         # clear screen and move on, saving points if user presses n
         if keyboard.is_pressed('n') and time.time() > stop_delay:
             stop_delay = time.time() + 5.0
             # clear off screen and handle old points
-            fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
             if len(points) > 0:
                 # add to template map
                 template_map[curr_gesture].append(points)
@@ -150,11 +157,15 @@ while True:
             if len(rand_gestures) > 0:
                 remove_index = random.randint(0,len(rand_gestures)-1)
                 curr_gesture = rand_gestures[remove_index] # curr gesture is saved even if the screen is cleared (clearing does not use up additional gestures)
-                cv2.imshow(epog.calib_window, gesture_images[curr_gesture])
-                cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
-                # cv2.imshow(epog.calib_window, fullscreen_frame)
+                # cv2.imshow(epog.calib_window, gesture_images[curr_gesture])
+                # cv2.waitKey(1)
+                # cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
+                fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (monitor['width'], monitor['height']))
+                cv2.imshow(epog.calib_window, fullscreen_frame)
+                cv2.waitKey(0)
+                fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
                 rand_gestures.pop(remove_index)
-                cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 230), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+                # cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 230), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
 
         if cv2.waitKey(1) == 27:
             # Release video capture
