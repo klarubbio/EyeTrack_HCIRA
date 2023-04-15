@@ -27,6 +27,29 @@ import numpy as np
 import random
 import time
 import gaze_tracking as gt
+import xml.etree.ElementTree as ET
+
+
+def sendToXML(map):
+
+    # iterate through each shape
+    for gesture in map:
+        filename = gesture
+        for rep in range(0, len(map[gesture])):
+            if rep < 10:
+                filename += "0"
+            filename += str(rep + 1)
+            # set up file
+            data = ET.Element('Gesture')
+            data.set('Name', filename)
+            for point in map[gesture][rep]:
+                pt = ET.SubElement(data, 'Point')
+                pt.set('X', str(point[0]))
+                pt.set('Y', str(point[1]))
+            out_xml = ET.tostring(data)
+            filename += '.xml'
+            with open(filename, 'wb') as f:
+                f.write(out_xml)
 
 # setup_epog expects max two args, both optional,
 # sets up webcam, and calibration windows
@@ -88,9 +111,11 @@ while True:
         if screen_x is not None and screen_y is not None:
             nonnone_frames += 1
             text = "Looking at point {}, {} on the screen".format(screen_x, screen_y)
-            
+
             epog.test_error_file.write("str(screen_x): ")
             epog.test_error_file.write(str(screen_x))
+            epog.test_error_file.write("str(screen_y): ")
+            epog.test_error_file.write(str(screen_y))
 
             # add points if user is pressing a
             if keyboard.is_pressed('a'):
@@ -129,7 +154,7 @@ while True:
                 cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
                 # cv2.imshow(epog.calib_window, fullscreen_frame)
                 rand_gestures.pop(remove_index)
-                cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+                cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 230), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
 
         if cv2.waitKey(1) == 27:
             # Release video capture
@@ -139,6 +164,7 @@ while True:
             print(counter)
             print(nonnone_frames)
             print(template_map)
+            sendToXML(template_map)
             break
 
         
