@@ -47,6 +47,7 @@ def sendToXML(map):
                 pt = ET.SubElement(data, 'Point')
                 pt.set('X', str(point[0]))
                 pt.set('Y', str(point[1]))
+                pt.set('T', 0)
             out_xml = ET.tostring(data)
             filename += '.xml'
             with open(filename, 'wb') as f:
