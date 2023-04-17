@@ -4,6 +4,7 @@
 
 ### Experiment Materials
 Link to blank consent form: https://docs.google.com/document/d/10IjtLXyvzft5OG96urfVnebuaI2phEeTElu0puQOOmg/edit?usp=sharing
+Link to presentation slides: https://docs.google.com/presentation/d/1VPq9PACX7IiaSyJCXtRrTWGbEi9IFgz1U7xL3Gs_81M/edit?usp=sharing
 
 ### Running the code
 1. Follow the original instructions for installing dependencies.
