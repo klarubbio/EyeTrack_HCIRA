@@ -17,6 +17,36 @@ Link to blank consent form: https://docs.google.com/document/d/10IjtLXyvzft5OG96
 4. Make sure that the scripts are configured to connect to the extra camera instead of the default camera. Anywhere that you see the code "cv2.VideoCapture(0)", it should be changed to "cv2.VideoCapture(1)". 
 5. Run the app!
 
+### Project 2
+Rather than extending the recognizer's capabilities itself, this project evaluates its capacity to understand user gestures through a new modality: eye gaze. Gaze is ideal for unistroke gestures, as it is a continuous stream of data (excluding blinks or other moments when the eyes are not visible). This falls within the category of collecting a new dataset. The same sixteen unistroke gestures were performed for each participants, though it is expected that the data collection medium will render significant differences from the original experiment with mouse input. Due to the complexity of implementing gaze tracking without a dedicated eye tracker, numerous libraries and already-existing open source projects were utilized in this experiment: 
+- OpenCV - https://opencv.org/ - This open-source library is widely used for computer vision, and is utilized in our case to detect the eyes and record their positions. 
+- GazeTracking - https://github.com/antoinelame/GazeTracking - Our project is built entirely on top of this code base. The code leverages OpenCV to provide useful insights about eye gaze, such as iris position of each eye and the overall gaze ratio (horizontal and vertical). 
+- GazeTracking - Calibrated - https://github.com/ritko/GazeTracking - This code base, which extends the previous repository, provides tools and calibration for mapping the eye gaze to an estimated point on the screen. Calibration helps assume the point of gaze by recording information about gaze at each corner of the screen. This was modified to ensure that 30 frames with gaze data exist for each calibration point, while the library previously would calibrate on a frame even if gaze was undetected. 
+
+### Project 1 Part 1 Updates: Drawing on a canvas
+- Set up a development environment - The data collection development environment is python run from the command line, with camera inputs. 
+- Instantiating a canvas - setup_calib_window() in epog.py - The canvas is instantiated during the gaze calibration phase using the OpenCV library. This code was not written by me. 
+- Listening for mouse or touch events - lines 123-136 in epog_example.py - Once calibration is complete, the program listens for "a" button presses, which indicate drawing. 
+- Clearing the canvas - lines 139-148 in epog_example.py - The button press "c" clears the canvas and allows the user to start over. 
+
+### Project 1 Part 2 updates: Online recognition
+Not relevant as we did not reimplement online recognition.
+
+### Project 1 Part 3 updates: offline recognition
+Not relevant as we did not implement a new offline recognition test. Some minor changes to the already existing code acommodated any differences in the uploaded xml files. 
+
+### Project 1 Part 4 Updates: Collecting Data from People
+- Write gesture files - SendToXML() in epog_example.py - This function iterates through a data structure containing all the eye gaze points, and is called whenever the participant quits the application.
+- Prompt for specific samples - lines 122-168 in epog_example.py - The next gesture is displayed when pressing "n". Users press the "a" button to indicate when they would like to draw. Once they release the "a" button, their gaze path is visualized. The delay avoids any distraction which could influence gaze. Users may clear their gesture and try again using the "c" button.
+- Recruit 6 people - consent folder - Consent forms are available in the consent folder, and anonymous identifiers are in the xml folder. 
+- Submit full dataset - see xml folder
+
+### Project 1 Part 5 Updates: Exploring Data from People
+- Run an offline recognition test - main.cpp - Recognition was conducted with minor updates to previously existing code. 
+- Output the result - see output file
+- Analyze dataset using ghost - see image
+- Extract user articulation insights
+
 ![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
