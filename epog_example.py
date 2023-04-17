@@ -125,6 +125,7 @@ while True:
             else:
                 # draw line of all points when user releases a
                 if len(points) > 0:
+                    cv2.destroyWindow('Gesture')
                     for i in range(1, len(points)):
                         cv2.line(fullscreen_frame, (points[i-1][0], points[i-1][1]), (points[i][0], points[i][1]), (170,170,170), 1)
                         cv2.imshow(epog.calib_window, fullscreen_frame)
@@ -143,8 +144,8 @@ while True:
             # don't save last points
             if len(points) > 0:
                 points = []
-            fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (monitor['width'], monitor['height']))
-            cv2.imshow(epog.calib_window, fullscreen_frame)
+            fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (800, 800))
+            cv2.imshow('Gesture', fullscreen_frame)
             cv2.waitKey(0)
             fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
         # clear screen and move on, saving points if user presses n
@@ -162,8 +163,8 @@ while True:
                 # cv2.imshow(epog.calib_window, gesture_images[curr_gesture])
                 # cv2.waitKey(1)
                 # cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
-                fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (monitor['width'], monitor['height']))
-                cv2.imshow(epog.calib_window, fullscreen_frame)
+                fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (800, 800))
+                cv2.imshow('Gesture', fullscreen_frame)
                 cv2.waitKey(0)
                 fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
                 rand_gestures.pop(remove_index)
