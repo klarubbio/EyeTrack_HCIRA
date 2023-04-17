@@ -134,6 +134,11 @@ while True:
                     cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
                     cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 230),
                                 cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+                    cv2.putText(fullscreen_frame, 'press n for next', (900, 130),
+                                cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+                    cv2.putText(fullscreen_frame, 'press c to try again', (900, 230),
+                                cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+
                     cv2.imshow(epog.calib_window, fullscreen_frame)
                     cv2.waitKey(0)
 
@@ -146,8 +151,16 @@ while True:
                 points = []
             fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (800, 800))
             cv2.imshow('Gesture', fullscreen_frame)
+            cv2.moveWindow('Gesture', round(monitor['width']/2.0 - 400), 0)
             cv2.waitKey(0)
             fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
+            cv2.putText(fullscreen_frame, 'press a to draw', (1300, 130),
+                        cv2.FONT_HERSHEY_DUPLEX, 0.8, (0, 255, 0), 1)
+            cv2.putText(fullscreen_frame, 'trace the shape with your eyes,', (1300, 230),
+                        cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 255, 0), 1)
+            cv2.putText(fullscreen_frame, 'starting at the dot', (1300, 280),
+                        cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 255, 0), 1)
+            cv2.imshow(epog.calib_window, fullscreen_frame)
         # clear screen and move on, saving points if user presses n
         if keyboard.is_pressed('n') and time.time() > stop_delay:
             stop_delay = time.time() + 5.0
@@ -165,10 +178,20 @@ while True:
                 # cv2.putText(fullscreen_frame, curr_gesture, (90, 130), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0,255,0), 1)
                 fullscreen_frame = cv2.resize(gesture_images[curr_gesture], (800, 800))
                 cv2.imshow('Gesture', fullscreen_frame)
+                cv2.moveWindow('Gesture', round(monitor['width'] / 2.0 - 400), 0)
                 cv2.waitKey(0)
                 fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
                 rand_gestures.pop(remove_index)
+                cv2.putText(fullscreen_frame, 'press a to draw', (1250, 130),
+                            cv2.FONT_HERSHEY_DUPLEX, 0.8, (0, 255, 0), 1)
+                cv2.putText(fullscreen_frame, 'trace the shape with your eyes,', (1200, 230),
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 255, 0), 1)
+                cv2.putText(fullscreen_frame, 'starting at the dot', (1250, 280),
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 255, 0), 1)
+                cv2.imshow(epog.calib_window, fullscreen_frame)
                 # cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 230), cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
+            else:
+                sendToXML(template_map)
 
         if cv2.waitKey(1) == 27:
             # Release video capture
