@@ -2,6 +2,9 @@
 
 ## HCIRA Readme Additions
 
+### Experiment Materials
+Link to blank consent form: https://docs.google.com/document/d/10IjtLXyvzft5OG96urfVnebuaI2phEeTElu0puQOOmg/edit?usp=sharing
+
 ### Running the code
 1. Follow the original instructions for installing dependencies.
 2. Additional libraries that may need to be installed are keyboard, numpy, and random.
