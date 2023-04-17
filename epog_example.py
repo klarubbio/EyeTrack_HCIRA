@@ -47,7 +47,7 @@ def sendToXML(map):
                 pt = ET.SubElement(data, 'Point')
                 pt.set('X', str(point[0]))
                 pt.set('Y', str(point[1]))
-                pt.set('T', 0)
+                pt.set('T', str(0))
             out_xml = ET.tostring(data)
             filename += '.xml'
             with open(filename, 'wb') as f:
@@ -134,6 +134,7 @@ while True:
                     cv2.putText(fullscreen_frame, 'gestures left: ' + str(len(rand_gestures)), (90, 230),
                                 cv2.FONT_HERSHEY_DUPLEX, 0.9, (0, 255, 0), 1)
                     cv2.imshow(epog.calib_window, fullscreen_frame)
+                    cv2.waitKey(0)
 
         # clear screen and try again if user presses c
         if keyboard.is_pressed('c') and time.time() > stop_delay:
