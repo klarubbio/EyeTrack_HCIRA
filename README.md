@@ -31,7 +31,7 @@ Rather than extending the recognizer's capabilities itself, this project evaluat
 - Clearing the canvas - lines 139-148 in epog_example.py - The button press "c" clears the canvas and allows the user to start over. 
 
 ### Project 1 Part 2 updates: Online recognition
-Not relevant as we did not reimplement online recognition.
+Not relevant as we did not reimplement online recognition. A pseudo-online recognition could be conducted by taking a gesture in the Python environment, then running it through the C++ code. 
 
 ### Project 1 Part 3 updates: offline recognition
 Not relevant as we did not implement a new offline recognition test. Some minor changes to the already existing code acommodated any differences in the uploaded xml files. 
@@ -40,13 +40,19 @@ Not relevant as we did not implement a new offline recognition test. Some minor 
 - Write gesture files - SendToXML() in epog_example.py - This function iterates through a data structure containing all the eye gaze points, and is called whenever the participant quits the application.
 - Prompt for specific samples - lines 122-168 in epog_example.py - The next gesture is displayed when pressing "n". Users press the "a" button to indicate when they would like to draw. Once they release the "a" button, their gaze path is visualized. The delay avoids any distraction which could influence gaze. Users may clear their gesture and try again using the "c" button.
 - Recruit 6 people - consent folder - Consent forms are available in the consent folder, and anonymous identifiers are in the xml folder. 
-- Submit full dataset - see xml folder
+- Submit full dataset - see xml_eyes folder
 
 ### Project 1 Part 5 Updates: Exploring Data from People
 - Run an offline recognition test - main.cpp - Recognition was conducted with minor updates to previously existing code. 
-- Output the result - see output file
+- Output the result - see results/output.csv
 - Analyze dataset using ghost - see image
-- Extract user articulation insights
+- Extract user articulation insights - With the nature of eye gaze being more difficult to control, the gestures were overall less consistent than touch-based gestures. One effect of the data collection method was that users would tend to start at one point, then readjust their gaze to begin drawing the shape. This resulted in some shapes having a "tail" such as the v and rectangle. There was also much more variance in gestures, possibly due to small, involuntary eye movements. Users were generally most consistent with gestures that started and stopped at the same point, such as circles, triangles, and rectangles. The chart below includes information about the recognition accuracies of each gesture, which somewhat support these insights.
+
+
+![image](https://user-images.githubusercontent.com/78495457/232829770-c61fb28d-9161-4189-895b-ccf2d0af7559.png)
+
+
+
 
 ![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)
