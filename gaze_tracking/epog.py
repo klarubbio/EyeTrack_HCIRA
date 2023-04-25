@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-
+"""
+Code written by Karina LaRubbio for Human-Centered Input Recognition Algorithms at the University of Florida.
+Modified from original repositories by antoinelame and ritko on Github.
+Utilizes OpenCV library: https://opencv.org/, among others.
+"""
 
 """
 Demonstration of the eye point of gaze (EPOG) tracking library.

@@ -1,3 +1,9 @@
+"""
+Code used by Karina LaRubbio for Human-Centered Input Recognition Algorithms at the University of Florida.
+From original repositories by antoinelame and ritko on Github.
+Utilizes OpenCV library: https://opencv.org/, among others.
+"""
+
 import sys
 
 

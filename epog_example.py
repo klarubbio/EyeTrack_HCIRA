@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-
+"""
+Code written by Karina LaRubbio for Human-Centered Input Recognition Algorithms at the University of Florida.
+Modified from original repositories by antoinelame and ritko on Github.
+Utilizes OpenCV library: https://opencv.org/, among others.
+"""
 
 """
 Demonstration of how to use the eye point of gaze (EPOG) tracking library.
@@ -65,8 +69,8 @@ fullscreen_frame = np.zeros((monitor['height'], monitor['width'], 3), np.uint8)
 # setup gestures for random selection
 gestures = ['triangle', 'x', 'rectangle', 'circle', 'check', 'caret', 'zigzag', 'arrow', 'left_square_bracket', 'right_square_bracket', 'v', 'delete', 'left_curly_brace', 'right_curly_brace', 'star', 'pigtail']
 rand_gestures = []
-# list of 10 of each shape
-for i in range(0,10):
+# list of 10 of each shape CHANGE: set to just one of each gesture
+for i in range(0,1):
     for shape in gestures:
         rand_gestures.append(shape)
 
