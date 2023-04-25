@@ -2,6 +2,8 @@
 
 ## HCIRA Readme Additions
 
+### Project 2: Eye Gesture Recognition - Karina LaRubbio, Trevor Richardson, Evan Brooks
+
 ### Experiment Materials
 Link to blank consent form: https://docs.google.com/document/d/10IjtLXyvzft5OG96urfVnebuaI2phEeTElu0puQOOmg/edit?usp=sharing
 Link to presentation slides: https://docs.google.com/presentation/d/1VPq9PACX7IiaSyJCXtRrTWGbEi9IFgz1U7xL3Gs_81M/edit?usp=sharing
@@ -31,7 +33,7 @@ Rather than extending the recognizer's capabilities itself, this project evaluat
 - Clearing the canvas - lines 139-148 in epog_example.py - The button press "c" clears the canvas and allows the user to start over. 
 
 ### Project 1 Part 2 updates: Online recognition
-Not relevant as we did not reimplement online recognition. A pseudo-online recognition could be conducted by taking a gesture in the Python environment, then running it through the C++ code. 
+Not relevant as we did not reimplement online recognition. A pseudo-online recognition could be conducted by taking a gesture in the Python environment, then running it through the C++ code. The modifications to this can be viewed in the online recognition code, with a specific focus on main.cpp lines 55-77 and parseOneXML in parseXML.cpp. If you are viewing this on Github, here's a link: https://github.com/klarubbio/hcira_p1/tree/project2_mods.
 
 ### Project 1 Part 3 updates: offline recognition
 Not relevant as we did not implement a new offline recognition test. Some minor changes to the already existing code acommodated any differences in the uploaded xml files. 
@@ -39,13 +41,13 @@ Not relevant as we did not implement a new offline recognition test. Some minor 
 ### Project 1 Part 4 Updates: Collecting Data from People
 - Write gesture files - SendToXML() in epog_example.py - This function iterates through a data structure containing all the eye gaze points, and is called whenever the participant quits the application.
 - Prompt for specific samples - lines 122-168 in epog_example.py - The next gesture is displayed when pressing "n". Users press the "a" button to indicate when they would like to draw. Once they release the "a" button, their gaze path is visualized. The delay avoids any distraction which could influence gaze. Users may clear their gesture and try again using the "c" button.
-- Recruit 6 people - consent folder - Consent forms are available in the consent folder, and anonymous identifiers are in the xml folder. 
-- Submit full dataset - see xml_eyes folder
+- Recruit 6 people - participants/consent folder - Consent forms are available in the consent folder, and anonymous identifiers are in the xml folder. 
+- Submit full dataset - see participants/xml_eyes folder
 
 ### Project 1 Part 5 Updates: Exploring Data from People
 - Run an offline recognition test - main.cpp - Recognition was conducted with minor updates to previously existing code. 
 - Output the result - see results/output.csv
-- Analyze dataset using ghost - see image
+- Analyze dataset using ghost - see results/heatmap.bmp
 - Extract user articulation insights - With the nature of eye gaze being more difficult to control, the gestures were overall less consistent than touch-based gestures. One effect of the data collection method was that users would tend to start at one point, then readjust their gaze to begin drawing the shape. This resulted in some shapes having a "tail" such as the v and rectangle. There was also much more variance in gestures, possibly due to small, involuntary eye movements. Users were generally most consistent with gestures that started and stopped at the same point, such as circles, triangles, and rectangles. The chart below includes information about the recognition accuracies of each gesture, which somewhat support these insights.
 
 
